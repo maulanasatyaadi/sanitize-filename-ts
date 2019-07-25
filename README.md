@@ -1,20 +1,21 @@
 # sanitize-filename-ts
 
 Sanitize a string to be safe for use as a filename by removing directory
-paths and invalid characters.
+paths and invalid characters. This package is a fork of sanitize-filename, updated and rewritten in
+Typescript.
 
 ## Install
 
-[npm: _sanitize-filename_](https://www.npmjs.com/package/sanitize-filename)
+[npm: _sanitize-filename-ts_](https://www.npmjs.com/package/sanitize-filename-ts)
 
 ```
-npm install sanitize-filename
+npm install sanitize-filename-ts
 ```
 
 ## Example
 
 ```js
-var sanitize = require("sanitize-filename");
+import { sanitize } from "sanitize-filename-ts";
 
 // Some string that may be unsafe or invalid as a filename
 var UNSAFE_USER_INPUT = "~/.\u0000ssh/authorized_keys";
@@ -26,7 +27,7 @@ var filename = sanitize(UNSAFE_USER_INPUT);
 
 ## Details
 
-_sanitize-filename_ removes the following:
+_sanitize-filename-ts_ removes the following:
 
 - [Control characters][] (`0x00`–`0x1f` and `0x80`–`0x9f`)
 - [Reserved characters][] (`/`, `?`, `<`, `>`, `\`, `:`, `*`, `|`, and
@@ -53,7 +54,7 @@ filename.
 An empty string `""` can be returned. For example:
 
 ```js
-var sanitize = require("sanitize-filename");
+import { sanitize } from "sanitize-filename-ts";
 sanitize("..");
 // -> ""
 ```
@@ -63,7 +64,7 @@ sanitize("..");
 Two different inputs can return the same value. For example:
 
 ```js
-var sanitize = require("sanitize-filename");
+import { sanitize } from "sanitize-filename-ts";
 sanitize("file?");
 // -> "file"
 sanitize("*file*");
