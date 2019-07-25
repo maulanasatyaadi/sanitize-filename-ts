@@ -29,7 +29,7 @@
     "prettier": "prettier -l **/*.{ts,json,md}"
   },
   "dependencies": {
-    "truncate-utf8-bytes": "^1.0.0"
+    "truncate-utf8-bytes": "^1.0.2"
   },
   "devDependencies": {
     "@types/tape": "^4.2.33",
