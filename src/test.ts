@@ -1,19 +1,19 @@
-"use strict";
+import test from "tape";
+import fs from "fs";
+import path from "path";
+import { createDirSync } from "mktemp";
+import { sanitize } from "./";
 
-var test = require("tape"),
-  sanitize = require("./");
-
-function repeat(string, times) {
+const repeat = (string: string, times: number) => {
   return new Array(times + 1).join(string);
-}
+};
 
 var REPLACEMENT_OPTS = {
-  replacement: "_",
+  replacement: "_"
 };
 
 test("valid names", function(t) {
-  ["the quick brown fox jumped over the lazy dog.mp3",
-    "résumé"].forEach(function(name) {
+  ["the quick brown fox jumped over the lazy dog.mp3", "résumé"].forEach(function(name) {
     t.equal(sanitize(name), name);
   });
   t.end();
@@ -100,11 +100,11 @@ test("reserved filename in Windows with replacement", function(t) {
   t.end();
 });
 
-test("invalid replacement", function (t) {
-  t.equal(sanitize(".", { replacement: "."}), "");
-  t.equal(sanitize("foo?.txt", { replacement: ">"}), "foo.txt");
-  t.equal(sanitize("con.txt", { replacement: "aux"}), "");
-  t.equal(sanitize("valid.txt", { replacement: "\/:*?\"<>|"}), "valid.txt");
+test("invalid replacement", function(t) {
+  t.equal(sanitize(".", { replacement: "." }), "");
+  t.equal(sanitize("foo?.txt", { replacement: ">" }), "foo.txt");
+  t.equal(sanitize("con.txt", { replacement: "aux" }), "");
+  t.equal(sanitize("valid.txt", { replacement: '/:*?"<>|' }), "valid.txt");
   t.end();
 });
 
@@ -118,31 +118,31 @@ test("255 characters max", function(t) {
 // Test the handling of non-BMP chars in UTF-8
 //
 
-test("non-bmp SADDLES the limit", function(t){
+test("non-bmp SADDLES the limit", function(t) {
   var str25x = repeat("a", 252),
-    name = str25x + '\uD800\uDC00';
+    name = str25x + "\uD800\uDC00";
   t.equal(sanitize(name), str25x);
 
   t.end();
 });
 
-test("non-bmp JUST WITHIN the limit", function(t){
-  var str25x = repeat('a', 251),
-    name = str25x + '\uD800\uDC00';
+test("non-bmp JUST WITHIN the limit", function(t) {
+  var str25x = repeat("a", 251),
+    name = str25x + "\uD800\uDC00";
   t.equal(sanitize(name), name);
 
   t.end();
 });
 
-test("non-bmp JUST OUTSIDE the limit", function(t){
-  var str25x = repeat('a', 253),
-    name = str25x + '\uD800\uDC00';
+test("non-bmp JUST OUTSIDE the limit", function(t) {
+  var str25x = repeat("a", 253),
+    name = str25x + "\uD800\uDC00";
   t.equal(sanitize(name), str25x);
 
   t.end();
 });
 
-function testStringUsingFS(str, t) {
+function testStringUsingFS(str: string, t: test.Test) {
   var sanitized = sanitize(str) || "default";
   var filepath = path.join(tempdir, sanitized);
 
@@ -167,50 +167,23 @@ function testStringUsingFS(str, t) {
   });
 }
 
-// Don't run these tests in browser environments
-if ( ! process.browser) {
-  // ## Browserify Build
-  //
-  // Make sure Buffer is not used when building using browserify.
-  //
+// ## Filesystem Tests
+//
+// Test writing files to the local filesystem.
+//
 
-  var browserify = require("browserify");
-  var concat = require("concat-stream");
+var tempdir = createDirSync("sanitize-filename-test-XXXXXX");
 
-  test("browserify build", function(t) {
-    var bundle = browserify(__dirname).bundle();
-    bundle.on("error", t.ifError);
-    bundle.pipe(concat(function(data) {
-      var source = data.toString();
-      t.ok(source.indexOf("Buffer") === -1);
-      t.end();
-    }));
-  });
+try {
+  var blns = require("big-list-of-naughty-strings/blns.json");
+} catch (err) {
+  console.error("Error: Cannot load file 'big-list-of-naughty-strings/blns.json'");
+  console.error("Make sure you've initialized git submodules by running");
+  process.exit(1);
+}
 
-  // ## Filesystem Tests
-  //
-  // Test writing files to the local filesystem.
-  //
-
-  var fs = require("fs");
-  var path = require("path");
-  var mktemp = require("mktemp");
-  var tempdir = mktemp.createDirSync("sanitize-filename-test-XXXXXX");
-
-  try {
-    var blns = require("./vendor/big-list-of-naughty-strings/blns.json");
-  }
-  catch (err) {
-    console.error("Error: Cannot load file './vendor/big-list-of-naughty-strings/blns.json'");
-    console.error();
-    console.error("Make sure you've initialized git submodules by running");
-    console.error();
-    console.error("    git submodule update --init");
-    console.error();
-    process.exit(1);
-  }
-
-  [].concat(
+([] as string[])
+  .concat(
     [
       repeat("a", 300),
       "the quick brown fox jumped over the lazy dog",
@@ -224,7 +197,7 @@ if ( ! process.browser) {
       "col:on.js",
       "star*.js",
       "question?.js",
-      "quote\".js",
+      'quote".js',
       "singlequote'.js",
       "brack<e>ts.js",
       "p|pes.js",
@@ -254,19 +227,15 @@ if ( ! process.browser) {
       "../../foobar",
       "./././foobar",
       "|*.what",
-      "LPT9.asdf",
+      "LPT9.asdf"
     ],
     blns
-  ).forEach(function(str) {
-    test(JSON.stringify(str), function(t) {
-      testStringUsingFS(str, t);
-    });
-  });
+  )
+  .forEach(str => test(JSON.stringify(str), t => testStringUsingFS(str, t)));
 
-  test("remove temp directory", function(t) {
-    fs.rmdir(tempdir, function(err) {
-      t.ifError(err);
-      t.end();
-    });
+test("remove temp directory", t => {
+  fs.rmdir(tempdir, err => {
+    t.ifError(err);
+    t.end();
   });
-}
+});

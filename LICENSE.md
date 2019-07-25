@@ -1,7 +1,7 @@
 This project is licensed under the [WTFPL][] and [ISC][] licenses.
 
-[WTFPL]: https://en.wikipedia.org/wiki/WTFPL
-[ISC]: https://opensource.org/licenses/ISC
+[wtfpl]: https://en.wikipedia.org/wiki/WTFPL
+[isc]: https://opensource.org/licenses/ISC
 
 ## WTFPL
 
