@@ -1,6 +1,6 @@
 {
   "name": "sanitize-filename-ts",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Sanitize a string for use as a filename",
   "keywords": [
     "file",
@@ -25,7 +25,8 @@
   "scripts": {
     "build": "tsc",
     "test": "tape build/test.js",
-    "prettier": "prettier -l **/*.{ts,json,md}"
+    "prettier": "prettier -l **/*.{ts,json,md}",
+    "prepare": "npm run-script build"
   },
   "dependencies": {
     "truncate-utf8-bytes": "^1.0.2"
