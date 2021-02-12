@@ -15,7 +15,7 @@ npm install sanitize-filename-ts
 ## Example
 
 ```js
-import { sanitize } from "sanitize-filename-ts";
+import sanitize from "sanitize-filename-ts";
 
 // Some string that may be unsafe or invalid as a filename
 var UNSAFE_USER_INPUT = "~/.\u0000ssh/authorized_keys";
@@ -54,7 +54,7 @@ filename.
 An empty string `""` can be returned. For example:
 
 ```js
-import { sanitize } from "sanitize-filename-ts";
+import sanitize from "sanitize-filename-ts";
 sanitize("..");
 // -> ""
 ```
@@ -64,7 +64,7 @@ sanitize("..");
 Two different inputs can return the same value. For example:
 
 ```js
-import { sanitize } from "sanitize-filename-ts";
+import sanitize from "sanitize-filename-ts";
 sanitize("file?");
 // -> "file"
 sanitize("*file*");
