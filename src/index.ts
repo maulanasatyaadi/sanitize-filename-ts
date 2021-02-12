@@ -42,7 +42,7 @@ function replace(input: string, replacement: string) {
   return truncate(sanitized, 255);
 }
 
-export function sanitize(input: string, options?: { replacement: string }) {
+export default function sanitize(input: string, options?: { replacement: string }) {
   const replacement = (options && options.replacement) || "";
   const output = replace(input, replacement);
   if (replacement === "") {
