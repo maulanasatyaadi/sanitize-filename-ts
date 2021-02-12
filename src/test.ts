@@ -2,7 +2,7 @@ import test from "tape";
 import fs from "fs";
 import path from "path";
 import { createDirSync } from "mktemp";
-import { sanitize } from "./";
+import sanitize from "./";
 
 const repeat = (string: string, times: number) => {
   return new Array(times + 1).join(string);
